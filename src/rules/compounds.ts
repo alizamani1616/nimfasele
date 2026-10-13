@@ -628,6 +628,8 @@ export const COMPOUND_WORDS: readonly (readonly [from: string, to: string])[] = 
   ['جهان گرد', 'جهانگرد'],
   ['جهان بینی', 'جهان‌بینی'],
   ['جهان سوم', 'جهان‌سوم'],
+  ['برمی گرداند', 'برمی‌گرداند'],
+  ['پنج ستاره', 'پنج‌ستاره'],
 ];
 
 /** Lookup: space-joined key → corrected form. */

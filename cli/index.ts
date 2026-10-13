@@ -15,6 +15,7 @@
  * 2 = usage or IO error.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
+import type { Readable } from 'node:stream';
 import { pathToFileURL } from 'node:url';
 import { fixHalfSpace, findHalfSpaceIssues } from '../src/index.js';
 import type { FixOptions, HalfSpaceIssue } from '../src/index.js';
@@ -124,14 +125,30 @@ export function offsetToLineCol(
   return { line, column };
 }
 
-function readStdin(): Promise<string> {
+/** Read a whole UTF-8 stream (used for stdin). */
+export function readStdinFrom(stream: Readable): Promise<string> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
-    process.stdin.on('data', (chunk: Buffer) => chunks.push(chunk));
-    process.stdin.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-    process.stdin.on('error', reject);
+    stream.on('data', (chunk: Buffer) => chunks.push(chunk));
+    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    stream.on('error', reject);
   });
 }
+
+/** Injectable process edges for testing. */
+export type Io = {
+  stderr: (s: string) => void;
+  stdout: (s: string) => void;
+  stdin: () => Promise<string>;
+  isTTY: () => boolean;
+};
+
+export const defaultIo: Io = {
+  stderr: (s) => process.stderr.write(s),
+  stdout: (s) => process.stdout.write(s),
+  stdin: () => readStdinFrom(process.stdin),
+  isTTY: () => process.stdin.isTTY === true,
+};
 
 export function fixOptionsOf(options: CliOptions): FixOptions {
   return { normalize: options.normalize, compounds: options.compounds };
@@ -144,10 +161,7 @@ function formatIssue(label: string, text: string, issue: HalfSpaceIssue): string
   return `${label}:${line}:${column} [${issue.rule}] ${original} → ${suggestion}`;
 }
 
-export async function run(
-  options: CliOptions,
-  io: { stderr: (s: string) => void } = { stderr: (s) => process.stderr.write(s) },
-): Promise<number> {
+export async function run(options: CliOptions, io: Io = defaultIo): Promise<number> {
   const fixOptions = fixOptionsOf(options);
   let exitCode = 0;
 
@@ -158,7 +172,7 @@ export async function run(
   }> = [];
   for (const file of options.files) {
     if (file === '-') {
-      inputs.push({ label: '<stdin>', read: readStdin });
+      inputs.push({ label: '<stdin>', read: io.stdin });
     } else {
       inputs.push({
         label: file,
@@ -168,11 +182,11 @@ export async function run(
     }
   }
   if (inputs.length === 0) {
-    if (process.stdin.isTTY) {
+    if (io.isTTY()) {
       io.stderr(`${USAGE}\n\nerror: no input file and stdin is a terminal\n`);
       return 2;
     }
-    inputs.push({ label: '<stdin>', read: readStdin });
+    inputs.push({ label: '<stdin>', read: io.stdin });
   }
 
   for (const input of inputs) {
@@ -207,15 +221,16 @@ export async function run(
     if (input.write) {
       input.write(fixed);
     } else {
-      process.stdout.write(fixed);
+      io.stdout(fixed);
     }
   }
 
   return exitCode;
 }
 
-async function main(): Promise<void> {
-  const { options, error } = parseArgs(process.argv.slice(2));
+/** Entry point; `argv` defaults to the process arguments. */
+export async function main(argv: readonly string[] = process.argv.slice(2)): Promise<void> {
+  const { options, error } = parseArgs(argv);
   if (options === null) {
     process.stderr.write(`${USAGE}\n\nerror: ${error}\n`);
     process.exitCode = 2;

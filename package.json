@@ -41,7 +41,7 @@
   "scripts": {
     "build": "tsup && tsup --config tsup.cli.config.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --coverage",
+    "test": "npm run build && vitest run --coverage",
     "test:watch": "vitest",
     "lint": "eslint .",
     "format": "prettier --write .",

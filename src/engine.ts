@@ -235,5 +235,10 @@ export function fixHalfSpace(text: string, options?: FixOptions): string {
     if (edits.length === 0) break;
     out = applyEdits(out, edits);
   }
+  // Cleanup edits can leave doubled spaces behind; re-collapse so the output
+  // keeps normalize's invariants (this also guarantees idempotency).
+  if (resolved.normalize) {
+    out = normalizePersian(out);
+  }
   return out;
 }
