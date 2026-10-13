@@ -87,7 +87,8 @@ describe('fixHalfSpace consistency with the report', () => {
       // Rebuild the text by replacing issue ranges right to left.
       let rebuilt = text;
       for (const issue of [...issues].sort((a, b) => b.start - a.start)) {
-        rebuilt = rebuilt.slice(0, issue.start) + issue.suggestion + rebuilt.slice(issue.end);
+        rebuilt =
+          rebuilt.slice(0, issue.start) + issue.suggestion + rebuilt.slice(issue.end);
       }
       expect(rebuilt).toBe(fixed);
     }

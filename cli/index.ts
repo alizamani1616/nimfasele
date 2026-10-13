@@ -229,7 +229,9 @@ export async function run(options: CliOptions, io: Io = defaultIo): Promise<numb
 }
 
 /** Entry point; `argv` defaults to the process arguments. */
-export async function main(argv: readonly string[] = process.argv.slice(2)): Promise<void> {
+export async function main(
+  argv: readonly string[] = process.argv.slice(2),
+): Promise<void> {
   const { options, error } = parseArgs(argv);
   if (options === null) {
     process.stderr.write(`${USAGE}\n\nerror: ${error}\n`);

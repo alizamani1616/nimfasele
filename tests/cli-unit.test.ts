@@ -124,7 +124,10 @@ describe('run (unit, injected IO)', () => {
     const file = join(workdir, 'u2.txt');
     writeFileSync(file, 'می روم', 'utf8');
     const stdout: string[] = [];
-    const code = await run({ ...baseOptions, files: [file], write: true }, stubIo(stdout));
+    const code = await run(
+      { ...baseOptions, files: [file], write: true },
+      stubIo(stdout),
+    );
     expect(code).toBe(0);
     expect(stdout).toEqual([]);
     expect(readFileSync(file, 'utf8')).toBe('می‌روم');
@@ -162,7 +165,10 @@ describe('run (unit, injected IO)', () => {
     const file = join(workdir, 'u3.txt');
     writeFileSync(file, 'کتاب ها', 'utf8');
     const stderr: string[] = [];
-    const code = await run({ ...baseOptions, files: [file], check: true }, stubIo([], stderr));
+    const code = await run(
+      { ...baseOptions, files: [file], check: true },
+      stubIo([], stderr),
+    );
     expect(code).toBe(1);
     expect(stderr.join('')).toContain('1 half-space issue found');
   });
@@ -183,7 +189,10 @@ describe('run (unit, injected IO)', () => {
     const file = join(workdir, 'u4.txt');
     writeFileSync(file, 'کتاب ها می روم', 'utf8');
     const stderr: string[] = [];
-    const code = await run({ ...baseOptions, files: [file], report: true }, stubIo([], stderr));
+    const code = await run(
+      { ...baseOptions, files: [file], report: true },
+      stubIo([], stderr),
+    );
     expect(code).toBe(0);
     const report = stderr.join('');
     expect(report).toContain('u4.txt:1:5 [suffix]');
