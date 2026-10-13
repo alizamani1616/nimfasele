@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nimfasele — نیم‌فاصله‌گذار خودکار فارسی</title>
+  </head>
+  <body>
+    <header>
+      <h1>nimfasele</h1>
+      <p class="tagline">نیم‌فاصله‌گذار خودکار متن فارسی — همه‌چیز در مرورگر شما، هیچ متنی جایی ارسال نمی‌شود.</p>
+    </header>
+
+    <main>
+      <section class="editor">
+        <div class="pane">
+          <h2>ورودی</h2>
+          <textarea
+            id="input"
+            spellcheck="false"
+            placeholder="متن فارسی با نیم‌فاصله‌های غلط اینجا بنویسید… مثلا: من می روم به راه آهن و کتاب هایم را می خوانم"
+          ></textarea>
+          <div class="samples">
+            <span>نمونه‌ها:</span>
+            <button type="button" data-sample="prefixes">پیشوندها</button>
+            <button type="button" data-sample="suffixes">پسوندها</button>
+            <button type="button" data-sample="compounds">مرکب‌ها</button>
+            <button type="button" data-sample="broken">خراب‌ها</button>
+            <button type="button" data-sample="mixed">مخلوط</button>
+          </div>
+        </div>
+
+        <div class="pane">
+          <h2>خروجی (اصلاح‌شده)</h2>
+          <div id="output" class="output" aria-live="polite"></div>
+          <div class="stats" id="stats"></div>
+        </div>
+      </section>
+
+      <section class="legend">
+        <h2>راهنما</h2>
+        <p><mark class="ins">سبز</mark> جایگزین تازه (نیم‌فاصله یا حروف چسبانده‌شده) — <mark class="del">قرمز</mark> چیزی که حذف شده (فاصله یا نیم‌فاصله خراب).</p>
+        <p>قواعد: <code>prefix</code> می/نمی/بی — <code>suffix</code> ها/تر/ترین — <code>enclitic</code> ام/ات/اش — <code>compound</code> جفت‌واژه‌ها — <code>cleanup</code> ترمیم ساختاری.</p>
+      </section>
+    </main>
+
+    <footer>
+      <a href="https://www.npmjs.com/package/nimfasele" target="_blank" rel="noreferrer">npm</a>
+      · <code>npm i nimfasele</code> · ساخته‌شده با Vite + TypeScript
+    </footer>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
