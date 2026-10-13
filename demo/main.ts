@@ -37,7 +37,10 @@ function escapeHtml(text: string): string {
 }
 
 /** Apply the single-pass issues to the normalized copy, left to right. */
-function applyOnce(text: string, issues: ReturnType<typeof findHalfSpaceIssues>): string {
+function applyOnce(
+  text: string,
+  issues: ReturnType<typeof findHalfSpaceIssues>,
+): string {
   let out = '';
   let pos = 0;
   for (const issue of issues) {
@@ -102,13 +105,15 @@ function update(): void {
 }
 
 input.addEventListener('input', update);
-document.querySelectorAll<HTMLButtonElement>('button[data-sample]').forEach((button) => {
-  button.addEventListener('click', () => {
-    input.value = SAMPLES[button.dataset.sample!] ?? '';
-    update();
-    input.focus();
+document
+  .querySelectorAll<HTMLButtonElement>('button[data-sample]')
+  .forEach((button) => {
+    button.addEventListener('click', () => {
+      input.value = SAMPLES[button.dataset.sample!] ?? '';
+      update();
+      input.focus();
+    });
   });
-});
 
 input.value = SAMPLES.prefixes!;
 update();

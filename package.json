@@ -1,6 +1,6 @@
 {
   "name": "nimfasele",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "نیم‌فاصله‌گذار خودکار متن فارسی — Persian half-space (ZWNJ) fixer with zero runtime dependencies",
   "keywords": [
     "persian",
