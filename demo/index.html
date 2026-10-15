@@ -34,9 +34,18 @@
         </div>
 
         <div class="pane">
-          <h2>خروجی (اصلاح‌شده)</h2>
+          <h2>خروجی با تغییرات</h2>
           <div id="output" class="output" aria-live="polite"></div>
           <div class="stats" id="stats"></div>
+        </div>
+
+        <div class="pane">
+          <h2>متن نهایی</h2>
+          <div id="final" class="output" aria-live="polite"></div>
+          <div class="actions">
+            <button type="button" id="copy">کپی متن</button>
+            <span id="copy-status" class="copy-status" role="status"></span>
+          </div>
         </div>
       </section>
 
@@ -45,6 +54,10 @@
         <p>
           <mark class="ins">سبز</mark> جایگزین تازه (نیم‌فاصله یا حروف چسبانده‌شده) —
           <mark class="del">قرمز</mark> چیزی که حذف شده (فاصله یا نیم‌فاصله خراب).
+        </p>
+        <p>
+          پنل «خروجی با تغییرات» متن اصلاح‌شده را با نشانه‌گذاری تغییرات نشان می‌دهد؛
+          پنل «متن نهایی» همان خروجی بدون نشانه‌گذاری است تا مستقیم کپی شود.
         </p>
         <p>
           قواعد: <code>prefix</code> می/نمی/بی — <code>suffix</code> ها/تر/ترین —

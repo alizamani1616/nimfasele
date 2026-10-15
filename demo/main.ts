@@ -7,6 +7,12 @@ import './style.css';
 const input = document.querySelector<HTMLTextAreaElement>('#input')!;
 const output = document.querySelector<HTMLDivElement>('#output')!;
 const stats = document.querySelector<HTMLDivElement>('#stats')!;
+const finalEl = document.querySelector<HTMLDivElement>('#final')!;
+const copyButton = document.querySelector<HTMLButtonElement>('#copy')!;
+const copyStatus = document.querySelector<HTMLSpanElement>('#copy-status')!;
+
+const EMPTY_OUTPUT = '<span class="empty">خروجی اینجا نمایش داده می‌شود…</span>';
+const EMPTY_FINAL = '<span class="empty">متن نهایی اینجا نمایش داده می‌شود…</span>';
 
 const RULE_LABELS: Record<IssueRule, string> = {
   prefix: 'پیشوند',
@@ -93,12 +99,58 @@ function render(text: string): void {
         .map((p) => `<span class="chip">${escapeHtml(p)}</span>`)
         .join(' ')}`
     : 'ایرادی پیدا نشد؛ متن تمیز است ✅';
+
+  // The plain, copy-ready result; the pane above shows the same text with the
+  // changes marked, which is not what you want to paste somewhere.
+  finalText = fixed;
+  finalEl.textContent = fixed;
+  copyButton.disabled = fixed.length === 0;
+  copyStatus.textContent = '';
 }
+
+let finalText = '';
+let copyGeneration = 0;
+
+function setCopyStatus(message: string): void {
+  copyStatus.textContent = message;
+  const generation = ++copyGeneration;
+  setTimeout(() => {
+    if (generation === copyGeneration) copyStatus.textContent = '';
+  }, 2000);
+}
+
+/** Fallback for contexts without the Clipboard API (e.g. a file:// page). */
+function selectFinalText(): void {
+  const range = document.createRange();
+  range.selectNodeContents(finalEl);
+  const selection = window.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+}
+
+async function copyFinalText(): Promise<void> {
+  if (finalText.length === 0) return;
+  try {
+    await navigator.clipboard.writeText(finalText);
+    setCopyStatus('کپی شد');
+  } catch {
+    selectFinalText();
+    setCopyStatus('کپی خودکار ممکن نشد؛ Ctrl+C بزنید');
+  }
+}
+
+copyButton.addEventListener('click', () => {
+  void copyFinalText();
+});
 
 function update(): void {
   if (input.value.length === 0) {
-    output.innerHTML = '<span class="empty">خروجی اینجا نمایش داده می‌شود…</span>';
+    output.innerHTML = EMPTY_OUTPUT;
+    finalEl.innerHTML = EMPTY_FINAL;
     stats.textContent = '';
+    finalText = '';
+    copyButton.disabled = true;
+    copyStatus.textContent = '';
     return;
   }
   render(input.value);
