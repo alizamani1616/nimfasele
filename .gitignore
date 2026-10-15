@@ -5,3 +5,19 @@ coverage/
 *.log
 .DS_Store
 .vite/
+
+# agent / tool scratch
+.zwork/
+
+# editors & OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini
+
+# local env & pack output
+.env
+.env.*
+*.tgz
+*.tsbuildinfo

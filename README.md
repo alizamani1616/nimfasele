@@ -1,11 +1,13 @@
 # nimfasele — نیم‌فاصله‌گذار خودکار فارسی
 
-[![CI](https://img.shields.io/badge/CI-local%20workflow-blue)](.github/workflows/ci.yml)
+[![CI](https://github.com/alizamani1616/nimfasele/actions/workflows/ci.yml/badge.svg)](https://github.com/alizamani1616/nimfasele/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 **nimfasele** («نیم‌فاصله») کتابخانه‌ای TypeScript با **صفر وابستگی runtime** برای اصلاح خودکار نیم‌فاصله (ZWNJ) در متن فارسی است؛ همراه با ابزار خط فرمان و API گزارش خطا با موقعیت مکانی دقیق.
 
 > **Half-space (ZWNJ) fixer for Persian text** — zero-dependency TypeScript library with a CLI, positional issue reporting, and a linguistically-aware rule engine. English notes below.
+
+🔗 **دموی زنده:** <https://alizamani1616.github.io/nimfasele/>
 
 ## چرا nimfasele؟
 
@@ -51,6 +53,14 @@ findHalfSpaceIssues('کتاب ها');
 // [{ start: 4, end: 5, original: ' ', suggestion: '‌', rule: 'suffix' }]
 
 hasHalfSpaceIssue('می کرد'); // true
+```
+
+همین API در CommonJS (بسته دوفرمته است: ESM + CJS):
+
+```js
+const { fixHalfSpace } = require('nimfasele');
+
+fixHalfSpace('می کرد'); // 'می‌کرد'
 ```
 
 ### API
@@ -100,6 +110,8 @@ npx nimfasele file.txt --report    # لیست ایرادها با خط/ستون 
 
 فلگ‌ها: `-w/--write`، `--check`، `--report`، `--no-normalize`، `--no-compounds`، `-h/--help`، `-v/--version`.
 کدهای خروج: `0` موفق / `1` ایراد پیدا شد (با `--check`) / `2` خطای استفاده یا IO.
+
+> خروجی متن اصلاح‌شده روی **stdout** نوشته می‌شود؛ لیست `--report` و پیام `--check` روی **stderr** می‌روند تا پایپ کردن متن تمیز بماند (`npx nimfasele file.txt --report > fixed.txt` فقط متن اصلاح‌شده را ذخیره می‌کند).
 
 ## توسعه
 
