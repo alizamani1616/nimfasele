@@ -5,6 +5,31 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      # @vitest/coverage-v8 peer-depends on an exact vitest version, so these
+      # two must always be raised together in one pull request.
+      vitest:
+        patterns:
+          - vitest
+          - '@vitest/*'
+    ignore:
+      # These toolchains are version-locked to each other and/or need a newer
+      # Node than our CI matrix targets. Dependabot raises them one at a time,
+      # and every such single bump fails `npm ci` with ERESOLVE:
+      #   - @vitest/coverage-v8@5 requires peer vitest@5 (and vice versa)
+      #   - @eslint/js@10 requires peer eslint@^10
+      #   - vitest@5 requires Node >=22.12, eslint@10 requires Node >=20.19
+      # Raise them deliberately, together, in one change.
+      - dependency-name: vitest
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@vitest/coverage-v8'
+        update-types: ['version-update:semver-major']
+      - dependency-name: eslint
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@eslint/js'
+        update-types: ['version-update:semver-major']
+      - dependency-name: typescript-eslint
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /
